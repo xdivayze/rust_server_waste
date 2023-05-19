@@ -4,6 +4,9 @@ from PIL import Image
 from deep_translator import GoogleTranslator
 import matplotlib.pyplot as plt
 
+
+# OPEN PIL IMAGE FROM BYTES IMPORTED FROM VIDEOS SENT VIA SOCKET AND GET LABEL AND PROBABILITY
+
 class ClipController:
     def __init__(self):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -17,6 +20,7 @@ class ClipController:
 
     def get_clip_features(self, image):
         image = self.preprocess(Image.open(image)).unsqueeze(0).to(self.device)
+        print(image.shape)
         plt.figure(figsize=(20, 20))
         plt.imshow(image[0].permute(1, 2, 0).cpu().numpy())
         plt.show()

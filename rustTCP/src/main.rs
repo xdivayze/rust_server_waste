@@ -1,25 +1,30 @@
 use std::io::{Read, Write};
 use std::net::TcpStream;
+use rscam::{Camera, Config};
+use rustTCP::send_data_async;
 
-//TODO spawn threads to handle multiple iamges sent to socket server
+//TODO spawn threads to handle multiple images sent to socket server
 //TODO implement video to image conversion
 
-fn main() {
-    let mut stream = TcpStream::connect("127.0.0.1:65432").unwrap_or_else(|e| {
-        panic!("Failed to connect: {}", e);
+#[tokio::main(flavor = "multi_thread", worker_threads = 4)]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+    let mut camera = Camera::new("/dev/video0").unwrap();
+    camera.start(&Config {
+        interval: (1, 15),
+        resolution: (640,480),
+        format: b"MJPG",
+        ..Default::default()
+    }).unwrap_or_else(|e| {
+        panic!("Failed to start camera: {}", e);
     });
 
-    let data = "images/img_1.png";
-    stream.write(data.as_bytes()).unwrap();
-
-    //print the response
-    let mut data = [0 as u8; 50]; // using 50 byte buffer
-    match stream.read(&mut data) {
-        Ok(_) => {
-            println!("Response: {}", String::from_utf8_lossy(&data[..]));
-        }
-        Err(e) => {
-            println!("Failed to receive data: {}", e);
-        }
+    for i in 1..10 {
+        tokio::spawn(async move {
+            println!("Hello from a thread! tcp returned {}", send_data_async(format!("images/{}.jpg", i), &mut camera).await.unwrap());
+        });
     }
+
+    Ok(())
+
 }
