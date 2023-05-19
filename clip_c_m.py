@@ -5,8 +5,6 @@ from deep_translator import GoogleTranslator
 import matplotlib.pyplot as plt
 
 
-# OPEN PIL IMAGE FROM BYTES IMPORTED FROM VIDEOS SENT VIA SOCKET AND GET LABEL AND PROBABILITY
-
 class ClipController:
     def __init__(self):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
