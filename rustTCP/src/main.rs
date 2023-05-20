@@ -10,7 +10,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut camera = Camera::new("/dev/video0").unwrap_or_else(|e| {
         panic!("Failed to open /dev/video0: {}", e);
     });
-    let mut stream = TcpStream::connect("127.0.0.1:8080").await.unwrap();
 
     camera.start(&rscam::Config {
         interval: (1, 30),
@@ -18,6 +17,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         format: b"MJPG",
         ..Default::default()
     }).unwrap();
+
+    let mut stream = TcpStream::connect("127.0.0.1:8080").await.unwrap();
+
+
 
     let handle = tokio::spawn(async move {
         let data = send_data_to_tcp(&mut stream,format!("{}", take_picture(&camera, String::from("../../images/test.jpg")).unwrap_or_else(|e| {

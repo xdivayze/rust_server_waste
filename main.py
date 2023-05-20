@@ -1,7 +1,7 @@
 import socket
-import clip_c_m
 import time
-import math
+
+import clip_c_m
 
 HOST = '127.0.0.1'
 PORT = 8080
@@ -26,7 +26,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 print(f"Elapsed time: {time.time() - now}")
                 print(f"Label: {label}, Probability: {prob}")
                 # send probability and label
-                conn.sendall(f"{label},{math.floor(prob*100)}".strip().encode(encoding='utf-8'))
+                conn.sendall(f"{label},{prob}".strip().encode(encoding='utf-8'))
             conn.close()
         print('Connection closed')
 

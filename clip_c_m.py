@@ -1,8 +1,7 @@
 import clip
+import matplotlib.pyplot as plt
 import torch
 from PIL import Image
-from deep_translator import GoogleTranslator
-import matplotlib.pyplot as plt
 
 
 class ClipController:
@@ -31,4 +30,4 @@ class ClipController:
         # for i, prompt in enumerate(self.prompts):
         #     print(f'{prompt} : {probs[0][i]}')
 
-        return GoogleTranslator(source='en', target='tr').translate(self.prompts[probs.argmax()]), probs.max()
+        return self.prompts[probs.argmax()], probs.max()
