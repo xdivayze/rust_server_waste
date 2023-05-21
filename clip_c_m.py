@@ -17,10 +17,10 @@ class ClipController:
 
     def get_clip_features(self, image):
         image = self.preprocess(Image.open(image)).unsqueeze(0).to(self.device)
-        print(image.shape)
-        plt.figure(figsize=(20, 20))
-        plt.imshow(image[0].permute(1, 2, 0).cpu().numpy())
-        plt.show()
+        # print(image.shape)
+        # plt.figure(figsize=(20, 20))
+        # plt.imshow(image[0].permute(1, 2, 0).cpu().numpy())
+        # plt.show()
 
         with torch.no_grad():
             logits_per_image, logits_per_text = self.model(image, self.text)
