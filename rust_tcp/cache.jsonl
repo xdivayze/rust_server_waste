@@ -1,0 +1,88 @@
+{
+  "waste_type": "Init",
+  "id": "da5fd090-83b9-496f-a334-ab3d2111f122",
+  "image_path": "images/da5fd090-83b9-496f-a334-ab3d2111f122",
+  "number": 0,
+  "probability": 0,
+  "children": [
+    {
+      "waste_type": "Other",
+      "id": "da5fd090-83b9-496f-a334-ab3d2111f122",
+      "image_path": "images/da5fd090-83b9-496f-a334-ab3d2111f122",
+      "number": 0,
+      "probability": 0.1746826171875
+    },
+    {
+      "waste_type": "Paper",
+      "id": "da5fd090-83b9-496f-a334-ab3d2111f122",
+      "image_path": "images/da5fd090-83b9-496f-a334-ab3d2111f122",
+      "number": 1,
+      "probability": 0.32666015625
+    },
+    {
+      "waste_type": "Paper",
+      "id": "da5fd090-83b9-496f-a334-ab3d2111f122",
+      "image_path": "images/da5fd090-83b9-496f-a334-ab3d2111f122",
+      "number": 2,
+      "probability": 0.31591796875
+    }
+  ]
+}{
+  "waste_type": "Init",
+  "id": "4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+  "image_path": "images/4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+  "number": 0,
+  "probability": 0,
+  "children": [
+    {
+      "waste_type": "Other",
+      "id": "4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+      "image_path": "images/4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+      "number": 0,
+      "probability": 0.1851806640625
+    },
+    {
+      "waste_type": "Paper",
+      "id": "4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+      "image_path": "images/4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+      "number": 1,
+      "probability": 0.347412109375
+    },
+    {
+      "waste_type": "Paper",
+      "id": "4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+      "image_path": "images/4e6da9f0-5cc2-4ac9-920e-8d823a4e6897",
+      "number": 2,
+      "probability": 0.2890625
+    }
+  ]
+}{
+  "waste_type": "Init",
+  "id": "5c105055-27b9-468c-92bb-74a75b7c5d1d",
+  "image_path": "images/5c105055-27b9-468c-92bb-74a75b7c5d1d",
+  "number": 0,
+  "probability": 0,
+  "children": [
+    {
+      "waste_type": "Other",
+      "id": "5c105055-27b9-468c-92bb-74a75b7c5d1d",
+      "image_path": "images/5c105055-27b9-468c-92bb-74a75b7c5d1d",
+      "number": 0,
+      "probability": 0.149658203125
+    },
+    {
+      "waste_type": "Paper",
+      "id": "5c105055-27b9-468c-92bb-74a75b7c5d1d",
+      "image_path": "images/5c105055-27b9-468c-92bb-74a75b7c5d1d",
+      "number": 1,
+      "probability": 0.2607421875
+    },
+    {
+      "waste_type": "Paper",
+      "id": "5c105055-27b9-468c-92bb-74a75b7c5d1d",
+      "image_path": "images/5c105055-27b9-468c-92bb-74a75b7c5d1d",
+      "number": 2,
+      "probability": 0.2802734375
+    }
+  ]
+}
