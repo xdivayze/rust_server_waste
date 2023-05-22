@@ -13,8 +13,8 @@ use uuid::Uuid;
 
 //TODO add enumeration
 //TODO add real time data handling
-//TODO add error handling
 //TODO optimize
+
 
 #[derive(Debug)]
 pub enum WasteType {
@@ -49,7 +49,7 @@ pub async fn send_data_to_tcp(stream: &mut TcpStream, data: &[u8]) -> Result<Str
     Ok(response.parse().unwrap())
 }
 
-pub fn take_picture(camera: &Camera, path: String) -> Result<String, rscam::Error> {
+pub fn take_picture<'a>(camera:&'a Camera, path: &'a String) -> Result<&'a String, rscam::Error> {
     let time = time::Instant::now();
     let temp_path = format!("{}.jpg", path);
     let frame = camera.capture()?;
@@ -60,7 +60,7 @@ pub fn take_picture(camera: &Camera, path: String) -> Result<String, rscam::Erro
 }
 
 
-pub async fn split_picture_horizontally(split_count: u32, waste: Waste, stream: &mut TcpStream) -> Result<Vec<Waste>, std::io::Error> {
+pub async fn split_picture_horizontally(split_count: u32, waste: &Waste, stream: &mut TcpStream) -> Result<Vec<Waste>, std::io::Error> {
     let mut waste_vec = Vec::new();
     let image = image::open(format!("{}.jpg", waste.image_path)).unwrap();
     let (width, height) = image.dimensions();
@@ -78,7 +78,7 @@ pub async fn split_picture_horizontally(split_count: u32, waste: Waste, stream: 
             let mut python_path = String::from("images/");
             python_path.push_str(&path.split("/").last().unwrap().to_string());
             python_path
-        }, waste.number+i, stream).await;
+        }, waste.number*10+i, stream).await;
         waste_vec.push(waste);
         x += split_width;
     }
