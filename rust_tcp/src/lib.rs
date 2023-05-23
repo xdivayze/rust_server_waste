@@ -19,22 +19,20 @@ use uuid::Uuid;
 #[derive(Debug)]
 pub enum WasteType {
     Init,
-    Plastic,
-    Carton,
-    Textile,
-    Food,
     Paper,
+    Cardboard,
     Glass,
+    Plastics,
     Metal,
-    Packing,
-    UmaThurman,
-    Medical,
-    Battery,
-    Hazardous,
-    Organic,
-    Electronic,
     Wood,
-    Mixed,
+    Leather,
+    Rubber,
+    Hazardous,
+    Compost,
+    Residual,
+    Organic,
+    Battery,
+    Electronic,
     Other,
 }
 
@@ -78,7 +76,7 @@ pub async fn split_picture_horizontally(split_count: u32, waste: Waste, stream: 
             let mut python_path = String::from("images/");
             python_path.push_str(&path.split("/").last().unwrap().to_string());
             python_path
-        }, waste.number+i, stream).await;
+        }, waste.number + i, stream).await;
         waste_vec.push(waste);
         x += split_width;
     }
@@ -100,24 +98,21 @@ impl Waste {
         let results = send_data_to_tcp(stream, image_path.as_bytes()).await.unwrap().to_ascii_lowercase().as_str().split(",").map(|s| s.to_string()).collect::<Vec<String>>();
         Waste {
             waste_type: {
-                match results[0].trim() {
-                    "plastic" => WasteType::Plastic,
-                    "carton" => WasteType::Carton,
-                    "textile" => WasteType::Textile,
-                    "food" => WasteType::Food,
-                    "paper" => WasteType::Paper,
-                    "glass" => WasteType::Glass,
-                    "metal" => WasteType::Metal,
-                    "packing" => WasteType::Packing,
-                    "uma thurman" => WasteType::UmaThurman,
-                    "medical" => WasteType::Medical,
-                    "battery" => WasteType::Battery,
-                    "hazardous" => WasteType::Hazardous,
-                    "organic" => WasteType::Organic,
-                    "electronic" => WasteType::Electronic,
-                    "wood" => WasteType::Wood,
-                    "mixed" => WasteType::Mixed,
-                    "other" => WasteType::Other,
+                match &results[0].trim()[0..2] {
+                    "or" => WasteType::Organic,
+                    "pa" => WasteType::Paper,
+                    "ca" => WasteType::Cardboard,
+                    "gl" => WasteType::Glass,
+                    "pl" => WasteType::Plastics,
+                    "me" => WasteType::Metal,
+                    "wo" => WasteType::Wood,
+                    "le" => WasteType::Leather,
+                    "ru" => WasteType::Rubber,
+                    "ha" => WasteType::Hazardous,
+                    "co" => WasteType::Compost,
+                    "re" => WasteType::Residual,
+                    "ba" => WasteType::Battery,
+                    "el" => WasteType::Electronic,
                     _ => WasteType::Other,
                 }
             },
@@ -131,10 +126,54 @@ impl Waste {
 
 #[cfg(test)]
 mod tests {
+    use std::fs;
+    use std::path::Path;
+    use json::object;
     use tokio::net::TcpStream;
     use uuid::Uuid;
 
     use super::*;
+
+    #[tokio::test]
+    async fn test_accuracy() {
+        env_logger::init();
+        assert!(Path::new("test_cache.jsonl").exists() || fs::File::create("test_cache.jsonl").is_ok());
+        let mut cache_file = fs::OpenOptions::new().append(true).write(true).open("test_cache.jsonl").unwrap();
+
+
+        let master_directory_iterator = fs::read_dir("/home/cavej/Downloads/garbage_collection_data/garbage_classification").unwrap();
+
+        let stream = &mut TcpStream::connect("127.0.0.1:8080").await.unwrap();
+
+        let time = time::Instant::now();
+
+        let mut count = 0;
+
+        for dir in master_directory_iterator {
+            let dir = dir.unwrap();
+            for image in dir.path().read_dir().unwrap() {
+                count += 1;
+                if count % 10 == 0 {
+                    let image = image.unwrap();
+                    let image_path = image.path();
+                    let mut waste = Waste::new(Uuid::new_v4(), image_path.to_str().unwrap().to_string(), 0, stream).await;
+                    waste.image_path = image.path().to_str().unwrap().to_string();
+                    let data = object! {
+                    waste_type_actual: dir.file_name().into_string().unwrap(),
+                    waste_type_result:  format!("{:?}",waste.waste_type),
+                    id: waste.id.to_string(),
+                    image_path: waste.image_path,
+                    number: waste.number,
+                    probability: waste.probability,
+                    };
+                    cache_file.write_all(format!("{}\n", data.dump()).as_bytes()).unwrap();
+                } else { continue; }
+
+            }
+        }
+        info!("Accuracy test took {}ms", time.elapsed().as_millis());
+        assert!(Path::new("test_cache.jsonl").exists());
+    }
 
     #[tokio::test]
     async fn test_split_picture_horizontally() {
@@ -166,7 +205,7 @@ mod tests {
         camera.stop().unwrap();
 
         let waste = Waste {
-            waste_type: WasteType::Plastic,
+            waste_type: WasteType::Init,
             id: uuid,
             image_path: path,
             number: 0,
